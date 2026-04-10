@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil{% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Les phrases du jour</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Catégorie</th>
+                <th>Likes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sentence in sentences %}
+            <tr>
+                <td><a href="{{path('app_sentence_show',{id:sentence.id})}}">la phrase du {{ sentence.createdAt|date('d/m/Y') }} ✨</a></td>
+                <td>
+                    <span class="badge bg-{{ sentence.category.color }}">
+                        {{ sentence.category.name }}
+                    </span>
+                </td>
+            {# Remplace ta ligne par celle-ci #}
+            <td>
+                👍 <a href="{{ path('app_like_likes', {'id': sentence.id}) }}">
+                    {{ sentence.likes }}
+                </a>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

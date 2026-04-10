@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}La phrase du jour{% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">La phrase du jour</h1>
+    <div class="card bg-{{ sentence.category.color }}">
+        <div class="card-body">
+            {{ sentence.createdAt|date('d/m/Y') }}
+            {{ sentence.content }}
+        </div>
+    </div>
+</div>
+ <a href="{{ sentence.likes }}"></a>
+{% endblock %}
