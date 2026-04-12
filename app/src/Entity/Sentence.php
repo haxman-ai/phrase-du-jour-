@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SentenceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,7 +20,7 @@ class Sentence
     private ?string $content = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAT = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     private ?int $likes = null;
@@ -26,6 +28,17 @@ class Sentence
     #[ORM\ManyToOne(inversedBy: 'sentences')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'sentence', orphanRemoval: true)]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,14 +57,14 @@ class Sentence
         return $this;
     }
 
-    public function getCreatedAT(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->createdAT;
+        return $this->createdAt;
     }
 
-    public function setCreatedAT(\DateTimeImmutable $createdAT): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->createdAT = $createdAT;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -68,14 +81,43 @@ class Sentence
         return $this;
     }
 
-    public function getCategory(): ?category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(?category $category): static
+    public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setSentence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getSentence() === $this) {
+                $comment->setSentence(null);
+            }
+        }
 
         return $this;
     }

@@ -20,9 +20,13 @@ class Comment
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sentence')]
+    #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $author = null;
+    private ?User $author = null;
+
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Sentence $sentence = null;
 
     public function getId(): ?int
     {
@@ -53,14 +57,26 @@ class Comment
         return $this;
     }
 
-    public function getAuthor(): ?user
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
-    public function setAuthor(?user $author): static
+    public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getSentence(): ?Sentence
+    {
+        return $this->sentence;
+    }
+
+    public function setSentence(?Sentence $sentence): static
+    {
+        $this->sentence = $sentence;
 
         return $this;
     }
