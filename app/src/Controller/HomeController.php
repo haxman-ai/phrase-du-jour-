@@ -20,7 +20,7 @@ final class HomeController extends AbstractController
     public function index(SentenceRepository $sentenceRepository): Response
     {
         $sentences = $sentenceRepository->findBy([], ['createdAt' => 'DESC']);
-
+        
         return $this->render('home/index.html.twig', [
             'sentences' => $sentences,
         ]);

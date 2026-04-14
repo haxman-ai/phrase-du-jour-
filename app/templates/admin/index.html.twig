@@ -6,7 +6,6 @@
 <div class="container mt-4">
     <h1 class="text-center mb-4">Espace Administration</h1>
 
-    {# Messages flash (utiles pour les étapes suivantes) #}
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
     {% endfor %}
@@ -15,7 +14,7 @@
     {% endfor %}
 
     <p>
-        <a href="#" class="btn btn-success btn-sm">
+        <a href="{{path('app_admin_add')}}" class="btn btn-success btn-sm">
             Ajouter une phrase du jour ➕
         </a>
     </p>

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% block title %}Espace Administration {% endblock %}
+{% block body %}
+<h1>Ajoute une phrase du jour</h1>
+  {{form_start(form)}}
+  {{form_widget(form)}}
+<button type="submit" class="btn btn-primary">Envoyer</button>
+  {{form_end(form)}}
+{% endblock %}
