@@ -20,58 +20,58 @@ final class HomeController extends AbstractController
     public function index(SentenceRepository $sentenceRepository): Response
     {
         $sentences = $sentenceRepository->findBy([], ['createdAt' => 'DESC']);
-        
+
         return $this->render('home/index.html.twig', [
             'sentences' => $sentences,
         ]);
     }
 
-   #[Route('/sentence/{id}', name: 'app_sentence_show')]
-public function show(
-    int $id,
-    SentenceRepository $sentenceRepository,
-    CommentRepository $commentRepository,
-    Request $request,
-    EntityManagerInterface $em
-): Response {
-    $sentence = $sentenceRepository->find($id);
+    #[Route('/sentence/{id}', name: 'app_sentence_show')]
+    public function show(
+        int $id,
+        SentenceRepository $sentenceRepository,
+        CommentRepository $commentRepository,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $sentence = $sentenceRepository->find($id);
 
-    if (!$sentence) {
-        throw $this->createNotFoundException('Phrase introuvable.');
-    }
+        if (!$sentence) {
+            throw $this->createNotFoundException('Phrase introuvable.');
+        }
 
-    $comments = $commentRepository->findBy(
-        ['sentence' => $sentence],
-        ['createdAt' => 'DESC']
-    );
+        $comments = $commentRepository->findBy(
+            ['sentence' => $sentence],
+            ['createdAt' => 'DESC']
+        );
 
-    $comment = new Comment();
-    $form = $this->createForm(CommentType::class, $comment);
-    $form->handleRequest($request);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $comment->setAuthor($this->getUser());
-        $comment->setSentence($sentence);
-        $comment->setCreatedAt(new \DateTimeImmutable());
-        if (!$this->getUser()) {
-        throw $this->createAccessDeniedException();
-       }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setAuthor($this->getUser());
+            $comment->setSentence($sentence);
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            if (!$this->getUser()) {
+                throw $this->createAccessDeniedException();
+            }
 
-        $em->persist($comment);
-        $em->flush();
+            $em->persist($comment);
+            $em->flush();
 
-        return $this->redirectToRoute('app_sentence_show', [
-            'id' => $sentence->getId(),
+            return $this->redirectToRoute('app_sentence_show', [
+                'id' => $sentence->getId(),
+            ]);
+        }
+
+        return $this->render('home/show.html.twig', [
+            'sentence' => $sentence,
+            'comments' => $comments,
+            'form' => $form->createView(),
         ]);
     }
 
-    return $this->render('home/show.html.twig', [
-        'sentence' => $sentence,
-        'comments' => $comments,
-        'form' => $form->createView(),
-    ]);
-}
-    
 
     #[Route('/likes/{id}', name: 'app_like_likes')]
     public function likes(Sentence $sentence, EntityManagerInterface $em): Response
@@ -83,5 +83,4 @@ public function show(
             'id' => $sentence->getId(),
         ]);
     }
-
 }
