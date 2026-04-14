@@ -32,8 +32,13 @@
                 </td>
                 <td>
                     <a href="{{ path('app_admin_edit', {'id': sentence.id}) }}" class="btn btn-warning btn-sm">✏️</a>
-                    <a href="{{path('app_admin_delete', {'id':sentence.id})}}" class="btn btn-danger btn-sm">❌</a>
-                </td>
+                    <form method="post" action="{{ path('app_admin_delete', {'id': sentence.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sentence.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">
+                        ❌
+                    </button>
+                </form>
+            </td>
             </tr>
             {% endfor %}
         </tbody>
