@@ -1,17 +1,16 @@
 <?php
 
-
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Comment;
-use App\Form\CommentType;
 use App\Entity\Sentence;
+use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Repository\SentenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
@@ -50,12 +49,13 @@ final class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setAuthor($this->getUser());
-            $comment->setSentence($sentence);
-            $comment->setCreatedAt(new \DateTimeImmutable());
             if (!$this->getUser()) {
                 throw $this->createAccessDeniedException();
             }
+
+            $comment->setAuthor($this->getUser());
+            $comment->setSentence($sentence);
+            $comment->setCreatedAt(new \DateTimeImmutable());
 
             $em->persist($comment);
             $em->flush();
@@ -68,10 +68,9 @@ final class HomeController extends AbstractController
         return $this->render('home/show.html.twig', [
             'sentence' => $sentence,
             'comments' => $comments,
-            'form' => $form->createView(),
+            'form'     => $form->createView(),
         ]);
     }
-
 
     #[Route('/likes/{id}', name: 'app_like_likes')]
     public function likes(Sentence $sentence, EntityManagerInterface $em): Response

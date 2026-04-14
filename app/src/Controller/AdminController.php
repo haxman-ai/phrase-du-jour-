@@ -34,6 +34,7 @@ final class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $sentence = new Sentence();
+
         $form = $this->createForm(SentenceType::class, $sentence);
         $form->handleRequest($request);
 
@@ -50,7 +51,7 @@ final class AdminController extends AbstractController
         }
 
         return $this->render('admin/form.html.twig', [
-            'form' => $form->createView(),
+            'form'   => $form->createView(),
             'isEdit' => false,
         ]);
     }
@@ -72,7 +73,7 @@ final class AdminController extends AbstractController
         }
 
         return $this->render('admin/form.html.twig', [
-            'form' => $form->createView(),
+            'form'   => $form->createView(),
             'isEdit' => true,
         ]);
     }

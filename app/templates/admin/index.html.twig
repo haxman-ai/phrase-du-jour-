@@ -3,45 +3,62 @@
 {% block title %}Espace Administration{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="text-center mb-4">Espace Administration</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Espace Administration</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-    {% for message in app.flashes('danger') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
 
-    <p>
-        <a href="{{path('app_admin_add')}}" class="btn btn-success btn-sm">
-            Ajouter une phrase du jour ➕
-        </a>
-    </p>
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
 
-    <table class="table table-bordered">
-        <tbody>
-            {% for sentence in sentences %}
-            <tr>
-                <td>{{ sentence.createdAt|date('d/m/Y') }}</td>
-                <td>{{ sentence.content }}</td>
-                <td>
-                    <span class="badge bg-{{ sentence.category.color }}">
-                        {{ sentence.category.name }}
-                    </span>
-                </td>
-                <td>
-                    <a href="{{ path('app_admin_edit', {'id': sentence.id}) }}" class="btn btn-warning btn-sm">✏️</a>
-                    <form method="post" action="{{ path('app_admin_delete', {'id': sentence.id}) }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sentence.id) }}">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">
-                        ❌
-                    </button>
-                </form>
-            </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        <p>
+            <a href="{{ path('app_admin_add') }}" class="btn btn-success btn-sm">
+                Ajouter une phrase du jour ➕
+            </a>
+        </p>
+
+        <table class="table table-bordered">
+            <tbody>
+                {% for sentence in sentences %}
+                    <tr>
+                        <td>{{ sentence.createdAt|date('d/m/Y') }}</td>
+
+                        <td>{{ sentence.content }}</td>
+
+                        <td>
+                            <span class="badge bg-{{ sentence.category.color }}">
+                                {{ sentence.category.name }}
+                            </span>
+                        </td>
+
+                        <td class="d-flex gap-2">
+                            <a href="{{ path('app_admin_edit', {'id': sentence.id}) }}"
+                               class="btn btn-primary btn-sm"
+                               title="Modifier">
+                                ✏️
+                            </a>
+
+                            <form method="post"
+                                  action="{{ path('app_admin_delete', {'id': sentence.id}) }}"
+                                  class="m-0">
+                                <input type="hidden"
+                                       name="_token"
+                                       value="{{ csrf_token('delete' ~ sentence.id) }}">
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        title="Supprimer"
+                                        onclick="return confirm('Confirmer la suppression ?')">
+                                    ❌
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

@@ -4,53 +4,52 @@
 {% block title %}La phrase du jour{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">La phrase du jour</h1>
 
-    <h1 class="text-center mb-4">La phrase du jour</h1>
+        <div class="card bg-{{ sentence.category.color }} mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span>{{ sentence.createdAt|date('d/m/Y') }}</span>
+                    <span class="badge text-bg-dark">{{ sentence.category.name }}</span>
+                </div>
 
-    <div class="card bg-{{ sentence.category.color }} mb-4">
-        <div class="card-body">
+                <p class="mb-3">{{ sentence.content }}</p>
 
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <span>{{ sentence.createdAt|date('d/m/Y') }}</span>
-                <span class="badge text-bg-dark">{{ sentence.category.name }}</span>
+                <div class="text-end">
+                    <a href="{{ path('app_like_likes', {'id': sentence.id}) }}" class="text-decoration-none">
+                        👍 {{ sentence.likes }}
+                    </a>
+                </div>
             </div>
-
-            <p class="mb-3">{{ sentence.content }}</p>
-
-            <div class="text-end">
-                <a href="{{ path('app_like_likes', {'id': sentence.id}) }}" class="text-decoration-none">
-                    👍 {{ sentence.likes }}
-                </a>
-            </div>
-
         </div>
+
+        <h2 class="mb-3">Commentaires</h2>
+
+        {% if comments is empty %}
+            <p>Soyez le premier à commenter !</p>
+        {% else %}
+            {% for comment in comments %}
+                <div class="mb-3">
+                    <strong>{{ comment.author.username }}</strong>
+                    <small class="text-muted">
+                        (le {{ comment.createdAt|date('d/m/Y') }})
+                    </small>
+                    <div>{{ comment.content }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if app.user %}
+            <h2 class="mb-3">Ajouter un commentaire</h2>
+
+            {{ form_start(form) }}
+                {{ form_row(form.content) }}
+
+                <button type="submit" class="btn btn-primary">
+                    Envoyer
+                </button>
+            {{ form_end(form) }}
+        {% endif %}
     </div>
-
-    <h2 class="mb-3">Commentaires</h2>
-
-    {% if comments is empty %}
-        <p>Soyez le premier à commenter !</p>
-    {% else %}
-        {% for comment in comments %}
-            <div class="mb-3">
-                <strong>{{ comment.author.username }}</strong>
-                <small class="text-muted">
-                    (le {{ comment.createdAt|date('d/m/Y') }})
-                </small>
-                <div>{{ comment.content }}</div>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% if app.user %}
-        <h2 class="mb-3">Ajouter un commentaire</h2>
-
-        {{ form_start(form) }}
-            {{ form_row(form.content) }}
-            <button type="submit" class="btn btn-primary">Envoyer</button>
-        {{ form_end(form) }}
-    {% endif %}
-
-</div>
 {% endblock %}
